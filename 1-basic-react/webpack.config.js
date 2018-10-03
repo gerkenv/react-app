@@ -1,18 +1,33 @@
-var deploymentMode = process.env.NODE_ENV || "development"; // "production" 
 var webpack = require('webpack');
 var path = require('path');
 
+// define deployment mode - "development", "production" or "none".
+var deploymentMode = process.env.NODE_ENV || "development";
+
 module.exports = {
-  context: path.join(__dirname, "src"),
-  devtool: "inline-sourcemap",
-  mode: deploymentMode,
-  entry: "./js/client.js",
+  // deployment mode
+  mode: deploymentMode,                 
+  // absolute path to resolve `entry`
+  context: path.join(__dirname, "src"), 
+  // debug utility which helps to determine an error in bundle. It shows directly the submodule that provoked an error
+  devtool: deploymentMode === "development" ? 'inline-source-map' : null, 
+  // entry point for compilation
+  // entry: "./js/client.js", or you have several entries
+  entry: {
+    client: './js/client.js'
+  },
+  // live reloading option for `webpack` executable
+  watch: true, 
   module: {
-    rules: [
+    // specific rules for all files that match to RegEx in `test`
+    rules: [ 
       {
-        test: /\.js?$/,
-        exclude: /(node_modules|bower_components)/,
+        // rules for *.js and *.jsx files
+        test: /\.jsx?$/,
+        // excluded folders
+        exclude: /(node_modules|bower_components)/, 
         loader: 'babel-loader',
+        // replacement of configuration file (.babelrc) of a loader
         query: {
           presets: ["@babel/preset-env", "@babel/preset-react"],
           plugins: [
@@ -24,12 +39,26 @@ module.exports = {
       }
     ]
   },
-  output: {
-    path: __dirname + "/dist/",
-    filename: "client.min.js"
+  // output definitions
+  output: { 
+    // absolute output path where bundles will be delivered
+    path: path.resolve(__dirname, 'dist'), 
+    // Only for `webpack-dev-server`.
+    // Compiled files will not be moved to output path, they will be hold in
+    // memory and served to `host/publicPath` URI (by default 
+    // `http://localhost:8080/publicPath/`).
+    publicPath: "/",
+    // file name for a bundle(s)
+    filename: "[name].min.js"
   },
+  // Development server `webpack-dev-server` settings
   devServer: {
-    contentBase: './dist'
+    // All files from `contentBase` are served from `host` URI (by default 
+    // `http://localhost:8080/`).
+    contentBase: './dist',
+    // Also server can monitoring files in `contentBase` and provide live 
+    // reloading if something changes
+    watchContentBase: true
   },
   plugins: deploymentMode === "development" ? [] : [
     new webpack.optimize.DedupePlugin(),
