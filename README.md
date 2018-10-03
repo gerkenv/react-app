@@ -98,6 +98,74 @@ In order to check your `jsx` code you may:
 [ESLint Official Page](https://eslint.org/)
 
 
+## Back to React
+### One Element Rule
+Everything in react is a component and __component returns only one DOM element__.
+So if we change `./src/client.js` so:
+```js
+class Layout extends React.Component {
+  render() {
+    return (
+      <h1>It works!</h1>
+      <h1>It works!</h1>
+    );
+  }
+}
+```
+It will not work!
+>  Adjacent JSX elements must be wrapped in an enclosing tag. Did you want a JSX fragment <>...</>?
+
+So if we wrp them into one `<div>` then it will work.
+```js
+class Layout extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>It works!</h1>
+        <h1>It works!</h1>
+      </div>
+    );
+  }
+}
+```
+
+### Injecting Dynamic Information
+If we create a constant and set it to some value then we can inject it to our header.
+```js
+class Layout extends React.Component {
+  render() {
+    const name = "Will";
+    return (
+      <h1>It is {name}!</h1>
+    );
+  }
+}
+```
+So everything that is inside of our `jsx` expression and surrounded with curly braces is a plain javascript. So it is also possible to write the functions over there...
+```js
+<h1>It is {3 + 2}!</h1>
+<h1>It is {3 + name}!</h1>
+<h1>It is {
+    (function() {
+    console.log("some message");
+    return 'amazing!'; })() 
+}</h1>
+```
+... but it is not recommended. Because these parts are used as templates.
+So you could implement some logic outside of your return statement inside of the `render` method, but it would be much cleaner if you would write additional logic methods outside of `render` method.
+```js
+class Layout extends React.Component {
+  getProperty() {
+    return 'property';
+  }
+  render() {
+    return (
+      <h1>It is {this.getProperty()}!</h1>
+    );
+  }
+}
+```
+You can also use a `constructor` function to set a property.
 ```js
 
 ```
