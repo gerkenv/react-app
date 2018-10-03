@@ -1,5 +1,8 @@
 # React Applications
-Remarks are based on the course 
+Remarks are based on the video course:
+https://www.youtube.com/watch?v=MhkGQAoc7bc
+Git Repository is here:
+https://github.com/learncodeacademy/react-js-tutorials
 
 ## 1. Basic React
 
