@@ -4,9 +4,10 @@ https://www.youtube.com/watch?v=MhkGQAoc7bc
 Git Repository is here:
 https://github.com/learncodeacademy/react-js-tutorials
 
-## 1. Basic React
+# 1. Basic React
 
-### Initial Project Structure
+## 1.1 Initial Project Setup
+### Minimal React
 Checkout branch "basic-react-initial-structure" to get initial project structure.
 Now let's take a look to the `<body>` section of our template page located at `./dist/index.html`.
 ```html
@@ -98,7 +99,7 @@ In order to check your `jsx` code you may:
 [ESLint Official Page](https://eslint.org/)
 
 
-## Back to React
+## 1.2 Back to React Basics
 ### One Element Rule
 Everything in react is a component and __component returns only one DOM element__.
 So if we change `./src/client.js` so:
@@ -180,9 +181,9 @@ class Layout extends React.Component {
 }
 ```
 
-### More Components
-Now we have the `Layout` componenet defined in `client.js`, let's move this definition in its own file.
-In `src/js` we will create a folder called `components` and inside of it we make a file called `layout.js`. Also let's create a `Header` componenet in `Header.js` file in the same folder and we will include our `Header` in our `Layout` component.
+## 1.3 More Components
+Now we have the `Layout` component defined in `client.js`, let's move this definition in its own file.
+In `src/js` we will create a folder called `components` and inside of it we make a file called `layout.js`. Also let's create a `Header` component in `Header.js` file in the same folder and we will include our `Header` in our `Layout` component.
 ```js
 // Header.js
 import React from "react";
@@ -230,7 +231,7 @@ export default class Footer extends React.Component {
   }
 }
 ```
-We will add it to our `Layout` under the `Header`. Also we will create a `Title` componenet for a `Header`, since it will be used as subcomponent, we will create a subfolder called `Header` and create our subcomponent over there.
+We will add it to our `Layout` under the `Header`. Also we will create a `Title` component for a `Header`, since it will be used as subcomponent, we will create a subfolder called `Header` and create our subcomponent over there.
 ```js
 // src/js/component/Header/Title.js
 import React from "react";
@@ -259,4 +260,167 @@ export default class Header extends React.Component {
 One more nice thing about this structure and `React`.
 If you look at the endpoint html structure you will see that our `Title` now located on the same level with the `footer`. It does not matter, that we have the intermediate `Header` level, we will not get any kind of `<div>` element as a provider to subelement.
 
-### Passing Data Around
+## 1.4 Passing Data Around
+There are basically 3 ways data gets handled in react:
+* State
+* Props
+* Context
+
+### State
+So state is available through `this.state`, which by default is `null`. So we can set our state, for example, in `Layout`. 
+The only place you want to set `state` is a `constructor` method. Otherwise, everywhere else you have to use `this.setState()`.
+```js
+export default class Layout extends React.Component {
+  constructor() {
+    super();
+    this.state = {step: "Loading..."};
+  }
+
+  render() {
+    return (
+      <div>
+        <p>{this.state.step}</p>
+        <Header/>
+        <Footer/>
+      </div>
+    );
+  }
+}
+```
+So what is really great is that if `state` changes the component will render again only the part of the DOM that has changed in some way. If DOM elements has not changed than DOM remains untouched.
+Also react will replace only changed part in the most efficient way.
+
+That is nice because DOM is the slowest part of webpage. So if do not need to reload the DOM completely then you can save some time.
+
+So let's change our state after 3 seconds. As it was said before, if you changing the state outside of `constructor`, you have to use `this.setState()`.
+```js
+  render() {
+    setTimeout(() => {
+      this.setState({step: "Loaded"});
+    }, 3000);
+    return (
+      <div>
+        <p>{this.state.step}</p>
+        <Header/>
+        <Footer/>
+      </div>
+    );
+  }
+```
+
+To check exactly what has changed on your page you should open `devtools` in chrome, go to console, hit `Esc` button and choose `Rendering` from dot menu / tabs. Then activate option "paint flashing".
+This way if you reload the page you will see that after the timeout only the paragraph with `state.step` has changed.
+
+The header can have its own state as well.
+
+_Mentality behind `state`_: \
+`State` is only get used if a component has an internal value that only affects the component and doesn't affect any of the rest of the app, if there is something that affects layout and affect nothing else then state maybe appropriate. 
+Aside from that you want to use `props`.
+
+### Props
+So now we delete our state...
+```js
+export default class Layout extends React.Component {
+  render() {
+    return (
+      <div>
+        <Header/>
+        <Footer/>
+      </div>
+    );
+  }
+}
+```
+...and we will inject the `prop` into our `Header`.
+So let's create a constant called `title` and we inject this property to `Header` element like to an usual DOM element.
+```js
+export default class Layout extends React.Component {
+  render() {
+    const title = "Welcome";
+    return (
+      <div>
+        <Header title={title}/>
+        <Footer/>
+      </div>
+    );
+  }
+}
+```
+So now if we go to our `Header.js`, we can access `this.props`, let put a `console.log(this.props)` to see what we get here.
+```js
+export default class Header extends React.Component {
+  render() {
+    console.log(this.props);
+    return (
+      <Title/>
+    );
+  }
+}
+```
+> {title: "Welcome"}
+
+We can create there a multiple `props`. We can set some value directly right there, you know, any expression you wish, but in curly braces `{}`.
+What is interesting in it, if we duplicate our header and set different `title` value to it then we will create 2 different element based on the same component.
+```js
+export default class Layout extends React.Component {
+  render() {
+    const title = "Welcome";
+    return (
+      <div>
+        <Header title={"Hello"}/>
+        <Header title={title}/>
+        <Footer/>
+      </div>
+    );
+  }
+}
+```
+Additionally we will inject out `title` even deeper.
+Let's inject `prop` in our `Title` component, and call it `mainTitle` to avoid confusion. You can also use the same name `title` if you wish.
+```js
+export default class Header extends React.Component {
+  render() {
+    return (
+      <Title mainTitle={this.props.title}/>
+    );
+  }
+}
+```
+Finally we will edit our `Title` template to show the injected `prop`.
+```js
+export default class Title extends React.Component {
+  render() {
+    return (
+      <h1>{this.props.mainTitle}</h1>
+    );
+  }
+}
+```
+
+### Combining State and Props
+So by default our `state.title` will be `"Welcome"`. And we will inject our state into `Header` component. Also after 3 seconds we will change our `state` to `"How are you?"`.
+```js
+export default class Layout extends React.Component {
+  constructor() {
+    super();
+    this.state = {title: "Welcome"};
+  }
+  render() {
+    setTimeout(()=>{
+      this.setState({title:"How are you?"})
+    }, 3000);
+
+    return (
+      <div>
+        <Header title={"Hello"}/>
+        <Header title={this.state.title}/>
+        <Footer/>
+      </div>
+    );
+  }
+}
+```
+So, back to concept, no matter how many things have changed it is only matter, what is there in the DOM has to be changed.
+So now we changed the `state` of `Layout`, `prop` of `Header` and `prop` of `Title`, but only one `<h1>` element of one of the `Header`s is updated in the DOM.
+
+## 1.5 Events
