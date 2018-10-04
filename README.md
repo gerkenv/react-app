@@ -165,7 +165,98 @@ class Layout extends React.Component {
   }
 }
 ```
-You can also use a `constructor` function to set a property.
+We can also use a `constructor` function to set a property.
 ```js
-
+class Layout extends React.Component {
+  constructor() {
+    super();
+    this.name = 'Will';
+  }
+  render() {
+    return (
+      <h1>It is {this.name}!</h1>
+    );
+  }
+}
 ```
+
+### More Components
+Now we have the `Layout` componenet defined in `client.js`, let's move this definition in its own file.
+In `src/js` we will create a folder called `components` and inside of it we make a file called `layout.js`. Also let's create a `Header` componenet in `Header.js` file in the same folder and we will include our `Header` in our `Layout` component.
+```js
+// Header.js
+import React from "react";
+
+export default class Header extends React.Component {
+  render() {
+    return (
+      <header>Header</header>
+    );
+  }
+}
+
+// Layout.js
+import React from "react";
+import Header from "./Header";
+
+export default class Layout extends React.Component {
+  render() {
+    return (
+      <div>
+        <Header/>
+      </div>
+    );
+  }
+}
+```
+Good, now our `client.js` should simply import our `Layout` and render it to DOM.
+```js
+import React from "react";
+import ReactDOM from "react-dom";
+import Layout from "./components/Layout";
+
+const app = document.getElementById('app');
+ReactDOM.render(<Layout/>, app);
+```
+Now we need a `Footer` component.
+```js
+import React from "react";
+
+export default class Footer extends React.Component {
+  render() {
+    return (
+      <footer>Footer</footer>
+    );
+  }
+}
+```
+We will add it to our `Layout` under the `Header`. Also we will create a `Title` componenet for a `Header`, since it will be used as subcomponent, we will create a subfolder called `Header` and create our subcomponent over there.
+```js
+// src/js/component/Header/Title.js
+import React from "react";
+
+export default class Title extends React.Component {
+  render() {
+    return (
+      <h1>Welcome</h1>
+    );
+  }
+}
+```
+Then we will import our title in our header.
+```js
+import React from "react";
+import Title from "./Header/Title";
+
+export default class Header extends React.Component {
+  render() {
+    return (
+      <Title/>
+    );
+  }
+}
+```
+One more nice thing about this structure and `React`.
+If you look at the endpoint html structure you will see that our `Title` now located on the same level with the `footer`. It does not matter, that we have the intermediate `Header` level, we will not get any kind of `<div>` element as a provider to subelement.
+
+### Passing Data Around
