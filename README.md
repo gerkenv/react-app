@@ -423,4 +423,8 @@ export default class Layout extends React.Component {
 So, back to concept, no matter how many things have changed it is only matter, what is there in the DOM has to be changed.
 So now we changed the `state` of `Layout`, `prop` of `Header` and `prop` of `Title`, but only one `<h1>` element of one of the `Header`s is updated in the DOM.
 
-## 1.5 Events
+## 1.5 Binding Events, User Inputs
+Let's create a user input in `Header` component and we will update the `Title` everytime when the `input` changes.
+First we will create a method `changeTitle` and we will pass it in `Header` component binding to `Layout`, that is important, because otherwise this method will be trying to modify the state of the `Header` component.
+
+  
