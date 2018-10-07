@@ -424,7 +424,85 @@ So, back to concept, no matter how many things have changed it is only matter, w
 So now we changed the `state` of `Layout`, `prop` of `Header` and `prop` of `Title`, but only one `<h1>` element of one of the `Header`s is updated in the DOM.
 
 ## 1.5 Binding Events, User Inputs
+### Passing the Method Below
 Let's create a user input in `Header` component and we will update the `Title` everytime when the `input` changes.
-First we will create a method `changeTitle` and we will pass it in `Header` component binding to `Layout`, that is important, because otherwise this method will be trying to modify the state of the `Header` component.
+First we will create a method `changeTitle` and we will pass it in `Header` component __binding to `Layout`__, that is important, because otherwise injected method will be trying to modify the state of the `Header` component.
+```js
+export default class Layout extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      title: "Welcome",
+    };
+  }
 
+  changeTitle(title) {
+    this.setState({title: title});
+  }
+
+  render() {
+    return (
+      <div>
+        <Header changeTitle={this.changeTitle.bind(this)}
+                title={this.state.title}/>
+        <Footer/>
+      </div>
+    );
+  }
+}
+```
+And now inside of `Header` component we will `setTimeout` to change the title. So this will trigger rerendering of `Layout` component.
+```js
+export default class Header extends React.Component {
+  render() {
+    setTimeout(() => {
+      this.props.changeTitle("New Title");
+    }, 3000);
+    
+    return (
+      <div>
+        <Title mainTitle={this.props.title} />
+        <input />
+      </div>
+    );
+  }
+}
+```
+So the page has to render a new title after the timeout.
+__Warning__
+In this case we have created an infinitive loop of rerendering with 3 seconds interval. Because each time we are changing title - we are changing the state and when we changing the state is causes rerendering what creates an asynchronous change of a title in 3 seconds.
+So never ever trigger the change of the state `render` function directly. You have to provide additional logic to stop the infinitive loop.
+
+### Binding Event of `<Input>`
+Now let's make use of our input. We shall connect the standard event `onChange` with our componenet's listener `onInputChange` where we will trigger the change of `Layout` state.
+```js
+export default class Header extends React.Component {
+  onInputChange(e) {
+    const title = e.target.value;
+    this.props.changeTitle(title);
+  }
   
+  render() {
+    return (
+      <div>
+        <Title mainTitle={this.props.title} />
+        <input onChange={this.onInputChange.bind(this)}/>
+      </div>
+    );
+  }
+}
+```
+Now the only thing we need to fix is initial value of `<input>`.
+```js
+  render() {
+    return (
+      <div>
+        <Title mainTitle={this.props.title} />
+        <input value={this.props.title} 
+               onChange={this.onInputChange.bind(this)}/>
+      </div>
+    );
+  }
+```
+
+## 1.6 Router & Single Page Applications
