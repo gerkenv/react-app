@@ -4,7 +4,8 @@ https://www.youtube.com/watch?v=MhkGQAoc7bc
 Git Repository is here:
 https://github.com/learncodeacademy/react-js-tutorials
 
-# 1. Basic React
+# 1 Basic React
+Working directory for this part is `1-basic-react`.
 
 ## 1.1 Initial Project Setup
 ### Minimal React
@@ -505,4 +506,23 @@ Now the only thing we need to fix is initial value of `<input>`.
   }
 ```
 
-## 1.6 Router & Single Page Applications
+# 2 Router & Single Page Applications
+# 2.0 Setup
+Working directory for this part is `2-react-router`.
+Switch to the branch `2-react-router-setup`.
+Call `npm install` from working directory.
+
+## 2.1 Implementing Router
+We will replace a standard rendering to the DOM with routing, so we open `client.js` and replace 
+```js
+ReactDOM.render(<Layout/>, app);
+```
+with following code
+```js
+ReactDOM.render(
+  <Router history={hashHistory}>
+    <Route path="/" component={Layout}></Route>
+  </Router>,
+  app
+);
+```
