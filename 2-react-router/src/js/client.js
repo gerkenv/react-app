@@ -8,4 +8,11 @@ import Layout from "./pages/Layout";
 
 const app = document.getElementById('app');
 
-ReactDOM.render(<Layout/>, app);
+ReactDOM.render(
+  <Router history={hashHistory}>
+    <Route path="/" component={Layout}></Route>
+  </Router>,
+  app
+);
+
+// ReactDOM.render(<Layout/>, app);
