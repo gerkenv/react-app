@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Router, Route, IndexRoute } from "react-router";
+import { Route } from "react-router";
 import { HashRouter } from "react-router-dom";
 
 import Bootstrap from "./vendor/bootstrap-without-jquery";
@@ -28,5 +28,3 @@ ReactDOM.render(
   </HashRouter>,
   app
 );
-
-// ReactDOM.render(<Layout/>, app);
