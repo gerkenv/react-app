@@ -17,11 +17,11 @@ ReactDOM.render(
   <HashRouter>
     <div>
       {/* If we use `exact path` then component is displayed
-      only at `/` route, but if we use `path` then component 
+      only at `/` route, but if we use `path` then component
       is displayed at every route that begins with `/` */}
       <Route path="/" component={Layout}/>
       {/* Beware of hash sign `#` - `localhost:8080/#/archives` */}
-      <Route path="/archives" component={Archives}/>  
+      <Route path="/archives/:article?" component={Archives}/>
       <Route path="/settings" component={Settings}/>
       <Route exact path="/" component={Featured}/>
     </div>
