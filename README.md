@@ -531,3 +531,87 @@ ReactDOM.render(
 ```
 * https://reacttraining.com/react-router/web/api/HashRouter
 
+Now let's create a couple of pages, we will start from `./src/js/pages/Featured.js`:
+```js
+import React from "react";
+
+export default class Featured extends React.Component {
+  render() {
+    return (
+      <h1>Featured</h1>
+    );
+  }
+}
+```
+Now basing on the same pattern we will create `Archive` and `Settings`. And then import hem all in `client`. We will also set our routes.
+```js
+import Archives from "./pages/Archives";
+import Featured from "./pages/Featured";
+import Settings from "./pages/Settings";
+
+ReactDOM.render(
+  <HashRouter>
+    <div>
+      {/* If we remove `exact` then `Layout` will be displayed 
+      at any route that begins with `/` */}
+      <Route exact path="/" component={Layout}/>
+      <Route path="/archives" component={Archives}/>
+      <Route path="/settings" component={Settings}/>
+      <Route path="/featured" component={Featured}/>
+    </div>
+  </HashRouter>,
+  app
+);
+```
+__Note__: 
+We are using `HashRouter`, so to access any route you have to set `/#` between host and a route, for example `Settings` URI is `localhost:8080/#/Settings`.
+
+### 2.1.1 Dynamic Links
+If you want to set a link to route, then you could import the `Link` module and set link to `<a>` element or to a `<button>`.
+```js
+export default class Layout extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>FruitNews.net</h1>
+        <Link to="/archives">archives</Link>
+        <Link to="/settings">settings</Link>
+        <Link to="/featured"><button>featured</button></Link>
+      </div>
+    );
+  }
+}
+```
+At the page it will be rendered as:
+```html
+<div>
+  <h1>FruitNews.net</h1>
+  <a href="#/archives">archives</a>
+  <a href="#/settings">settings</a>
+  <a href="#/featured">
+    <button>featured</button>
+  </a>
+</div>
+```
+Also you could use bootstrap buttons or `this.props.history.push()`:
+```jsx
+export default class Layout extends React.Component {
+  navigate() {
+    this.props.history.push("/");
+  }
+  
+  render() {
+    return (
+      <div>
+        <h1>FruitNews.net</h1>
+        <Link to="/archives" class="btn btn-default">archives</Link>
+        <Link to="/settings" class="btn btn-success">settings</Link>
+        <button onClick={this.navigate.bind(this)}>Featured</button>
+      </div>
+    );
+  }
+}
+```
+__Note__:
+`this.props.history.push()` pushes new URL to browser history stack, but if you'll use `this.props.history.replace()` then you overwritting the last URL.
+
