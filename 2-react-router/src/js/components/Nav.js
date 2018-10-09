@@ -1,5 +1,5 @@
 import React from "react";
-import { IndexLink, Link } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 export default class Nav extends React.Component {
   constructor() {
@@ -23,7 +23,7 @@ export default class Nav extends React.Component {
     const navClass = collapsed ? "collapse" : "";
 
     return (
-      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <nav class="navbar navbar-inverse navbar-default" role="navigation">
         <div class="container">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" onClick={this.toggleCollapse.bind(this)} >
@@ -36,7 +36,7 @@ export default class Nav extends React.Component {
           <div class={"navbar-collapse " + navClass} id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
               <li class={featuredClass}>
-                <IndexLink to="/" onClick={this.toggleCollapse.bind(this)}>Featured</IndexLink>
+                <NavLink to="/" onClick={this.toggleCollapse.bind(this)}>Featured</NavLink>
               </li>
               <li class={archivesClass}>
                 <Link to="archives" onClick={this.toggleCollapse.bind(this)}>Archives</Link>
