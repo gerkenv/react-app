@@ -20,6 +20,7 @@
     "babel-plugin-react-html-attrs": "^2.0",
     "babel-plugin-transform-class-properties": "^6.0",
     "history": "^4.7",
+    "query-string": "^6.2.0",
     "react": "^16.0",
     "react-dom": "^16.0",
     "react-router": "^4.3",
