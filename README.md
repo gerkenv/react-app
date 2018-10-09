@@ -1,11 +1,11 @@
-# React Applications
+# React v.16 Applications
 Remarks are based on the video course:
 https://www.youtube.com/watch?v=MhkGQAoc7bc
 Git Repository is here:
 https://github.com/learncodeacademy/react-js-tutorials
 
 # 1 Basic React
-# 1.0 Setup
+## 1.0 Setup
 Switch to the branch `1-basic-react-setup`.
 Working directory for this part is `1-basic-react`.
 Call `npm install` from working directory.
@@ -39,7 +39,7 @@ class Layout extends React.Component {
 const app = document.getElementById('app');
 ReactDOM.render(<Layout/>, app);
 ```
-It includes `React` and `ReactDOM`- which is our rendering engine. 
+It includes `React` and `ReactDOM`- which is our rendering engine.
 It has a class called `Layout` that based on `React.Component` class. \
 Anyway, everything in `react` is a component. The same way as everything in `html` page is an element.
 For very basic `react` component it is enough to have only a `render()` method. \
@@ -60,21 +60,21 @@ ReactDOM.render(<Layout/>, app);
 ### Installing
 Incredible chapter. Call `npm install` from folder `1-basic-react`.
 
-### Building an Application with Webpack
+### Building an Application with Webpack v.4
 So right we have our js source files in `src/js` and our html page in `dist` folder. Our page requires `client.min.js`, so it has to be created and moved to `dist` folder. This all is already defined in webpack configuration file. Just read the comments inside.
 There are a couple of options how you can run `webpack`
 1. So if `webpack` was installed globally with `npm install -g webpack webpack-cli` then to build our application we should run (from `1-basic-react`):
 ```
-webpack --config webpack.config.js --progress 
+webpack --config webpack.config.js --progress
 ```
 2. Also we can run the locally installed instance.
 If you run `npm install` from folder `1-basic-react-app` then you will get a local instance of `webpack`. Then you can also run (from `1-basic-react`):
 ```
-node_modules/.bin/webpack --config webpack.config.js --progress 
+node_modules/.bin/webpack --config webpack.config.js --progress
 ```
 3. It's the same as the 2nd one, but it easier to use, `npm` supplies us with a tool called `npx` which can access and run all locally installed plugins, so you can run:
 ```
-npx webpack --config webpack.config.js --progress 
+npx webpack --config webpack.config.js --progress
 ```
 4. You may noticed that `npx webpack --config webpack.config.js --progress ` is a bit to much to write each time, so i packed it into `scripts` section of our `package.json` with the name `build`. So you can call it through `npm` now like this:
 ```
@@ -96,7 +96,7 @@ Basically you have 2 simple ways to hold a project to be live reloaded. \
 ### ESLint
 If you are not using Atom or VS Code - skip this part.
 In order to check your `jsx` code you may:
-1. Install `eslint` extension to your editor. 
+1. Install `eslint` extension to your editor.
 2. Install `eslint-plugin-react` globally `npm install eslint-plugin-react -g` to support `react` syntax.
 3. Create configuration file `.eslintrc.json`. (This one is already attached to the project).
 
@@ -153,7 +153,7 @@ So everything that is inside of our `jsx` expression and surrounded with curly b
 <h1>It is {
     (function() {
     console.log("some message");
-    return 'amazing!'; })() 
+    return 'amazing!'; })()
 }</h1>
 ```
 ... but it is not recommended. Because these parts are used as templates.
@@ -271,7 +271,7 @@ There are basically 3 ways data gets handled in react:
 * Context
 
 ### State
-So state is available through `this.state`, which by default is `null`. So we can set our state, for example, in `Layout`. 
+So state is available through `this.state`, which by default is `null`. So we can set our state, for example, in `Layout`.
 The only place you want to set `state` is a `constructor` method. Otherwise, everywhere else you have to use `this.setState()`.
 ```js
 export default class Layout extends React.Component {
@@ -318,7 +318,7 @@ This way if you reload the page you will see that after the timeout only the par
 The header can have its own state as well.
 
 _Mentality behind `state`_: \
-`State` is only get used if a component has an internal value that only affects the component and doesn't affect any of the rest of the app, if there is something that affects layout and affect nothing else then state maybe appropriate. 
+`State` is only get used if a component has an internal value that only affects the component and doesn't affect any of the rest of the app, if there is something that affects layout and affect nothing else then state maybe appropriate.
 Aside from that you want to use `props`.
 
 ### Props
@@ -462,7 +462,7 @@ export default class Header extends React.Component {
     setTimeout(() => {
       this.props.changeTitle("New Title");
     }, 3000);
-    
+
     return (
       <div>
         <Title mainTitle={this.props.title} />
@@ -485,7 +485,7 @@ export default class Header extends React.Component {
     const title = e.target.value;
     this.props.changeTitle(title);
   }
-  
+
   render() {
     return (
       <div>
@@ -502,21 +502,21 @@ Now the only thing we need to fix is initial value of `<input>`.
     return (
       <div>
         <Title mainTitle={this.props.title} />
-        <input value={this.props.title} 
+        <input value={this.props.title}
                onChange={this.onInputChange.bind(this)}/>
       </div>
     );
   }
 ```
 
-# 2 Router & Single Page Applications
-# 2.0 Setup
+# 2 React-Router v.4 & Single Page Applications
+## 2.0 Setup
 Switch to the branch `2-react-router-setup`.
 Working directory for this part is `2-react-router`.
 Call `npm install` from working directory.
 
 ## 2.1 Implementing Router
-We will replace a standard rendering to the DOM with routing, so we open `client.js` and replace 
+We will replace a standard rendering to the DOM with routing, so we open `client.js` and replace
 ```js
 ReactDOM.render(<Layout/>, app);
 ```
@@ -552,7 +552,7 @@ import Settings from "./pages/Settings";
 ReactDOM.render(
   <HashRouter>
     <div>
-      {/* If we remove `exact` then `Layout` will be displayed 
+      {/* If we remove `exact` then `Layout` will be displayed
       at any route that begins with `/` */}
       <Route exact path="/" component={Layout}/>
       <Route path="/archives" component={Archives}/>
@@ -563,12 +563,14 @@ ReactDOM.render(
   app
 );
 ```
-__Note__: 
+__Note__:
 We are using `HashRouter`, so to access any route you have to set `/#` between host and a route, for example `Settings` URI is `localhost:8080/#/Settings`.
 
 ### 2.1.1 Dynamic Links
 If you want to set a link to route, then you could import the `Link` module and set link to `<a>` element or to a `<button>`.
 ```js
+import { Link } from "react-router-dom";
+
 export default class Layout extends React.Component {
   render() {
     return (
@@ -599,7 +601,7 @@ export default class Layout extends React.Component {
   navigate() {
     this.props.history.push("/");
   }
-  
+
   render() {
     return (
       <div>
@@ -614,4 +616,145 @@ export default class Layout extends React.Component {
 ```
 __Note__:
 `this.props.history.push()` pushes new URL to browser history stack, but if you'll use `this.props.history.replace()` then you overwritting the last URL.
+
+## 2.2 Route Parameters
+Let's imagine you don't want to open the whole archive, but specific article,
+then you could replace
+```js
+<Route path="/archives" component={Archives}/>
+```
+with following route definition
+```js
+<Route path="/archives/:article" component={Archives}/>
+```
+In this case the URL `localhost:8080/#/archives` will not lead to `Archives`
+component anymore and you need to use more some specific URL to match the pattern
+`localhost:8080/#/archives/anything`.
+So now let's print out our `props` to console to see what we have there:
+```js
+export default class Archives extends React.Component {
+  render() {
+    console.log(this.props);
+    return (
+      <h1>Archives</h1>
+    );
+  }
+}
+```
+So if you go to `http://localhost:8080/#/archives/some-text` then you will see
+in the console, that `this.props.match.params.article` is equal to `some-text`.
+So let's show it on our page:
+```js
+export default class Archives extends React.Component {
+  render() {
+    console.log(this.props);
+    return (
+      <h1>Archives / {this.props.match.params.article}</h1>
+    );
+  }
+}
+```
+Of course we an also make it cleaner:
+```js
+export default class Archives extends React.Component {
+  render() {
+    const { article } = this.props.match.params;
+    return (
+      <h1>Archives / {article}</h1>
+    );
+  }
+}
+```
+
+### 2.2.1 Query Variables in Routes
+To be able to parse usual query string or query parameters we should install and import `query-string` package.
+Go to working directory and call
+```
+npm install -s query-string
+```
+Then update the code in `Archives.js`
+```js
+export default class Archives extends React.Component {
+  getAllQueryParams() {
+    const queryParams = queryString.parse(this.props.location.search);
+
+    let params = "";
+    for (let param in queryParams) {
+      params += " / " + param + " is " + queryParams[param];
+    }
+    return params;
+  }
+
+  render() {
+    console.log(this.props);
+    const { article } = this.props.match.params;
+    let params = this.getAllQueryParams();
+    return (
+      <div>
+        <h1>Archives / {article}</h1>
+        <h2>{params}</h2>
+      </div>
+    );
+  }
+}
+```
+Now if we go to `http://localhost:8080/#/archives/news-5?date=01.01.2016&time=23:59`.
+Then our query parameters will be parsed and displayed in `<h2>`.
+
+### 2.2.2 Optional Route Parameters
+If we change
+```js
+<Route path="/archives/:article" component={Archives}/>
+```
+to form with an optional parameter
+```js
+<Route path="/archives/:article?" component={Archives}/>
+```
+Then we could use our query strings at following URI:
+* `http://localhost:8080/#/archives/some-text?date=01.01.2016&time=23:59`
+* `http://localhost:8080/#/archives?date=01.01.2016&time=23:59`
+
+
+### 2.2.3 Setting Class to A Current Link
+Actually name of chapter has to be something like "Setting a class definition to a link if its target route is set".
+
+Let's change the code a bit for our `Layout` component
+```js
+import React from "react";
+import { NavLink } from "react-router-dom";
+
+export default class Layout extends React.Component {
+  navigate() {
+    this.props.history.push("/");
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>FruitNews.net</h1>
+        <NavLink to="/archives" activeClassName="Active">archives</NavLink>
+        <NavLink to="/settings">settings</NavLink>
+        <button onClick={this.navigate.bind(this)}>Featured</button>
+      </div>
+    );
+  }
+}
+```
+Now if we go to `http://localhost:8080/#/archives`, then link will get the `class="Active"`,
+and if we go to another page, like `http://localhost:8080/#/settings` where this link is available then you will see that this class is gone.
+* https://stackoverflow.com/questions/43146460/reactjs-unknown-prop-activeclassname-on-a-tag-remove-this-prop-from-the-e
+
+### 2.2.4 Determine if a Current Route is Active
+In previous version of `react-router`, v3 and less, there was a possibility to check if a route of current component is now active. It was made with
+```js
+  render() {
+    console.log(this.props.history.isActive(""));
+    return (
+      //...
+```
+From version 4 it is a bit different - read this thread:
+* https://github.com/ReactTraining/react-router/issues/4793
+
+There is a possibility to hang a callback to a `NavLink`, so when the route becomes active, the state can be changed in the component.
+* https://reacttraining.com/react-router/web/api/NavLink/isactive-func
 
