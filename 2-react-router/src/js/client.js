@@ -16,13 +16,14 @@ const app = document.getElementById('app');
 ReactDOM.render(
   <HashRouter>
     <div>
-      {/* If we remove `exact` then `Layout` will be displayed
-      at any route that begins with `/` */}
-      <Route exact path="/" component={Layout}/>
+      {/* If we use `exact path` then component is displayed
+      only at `/` route, but if we use `path` then component 
+      is displayed at every route that begins with `/` */}
+      <Route path="/" component={Layout}/>
       {/* Beware of hash sign `#` - `localhost:8080/#/archives` */}
       <Route path="/archives" component={Archives}/>  
       <Route path="/settings" component={Settings}/>
-      <Route path="/featured" component={Featured}/>
+      <Route exact path="/" component={Featured}/>
     </div>
   </HashRouter>,
   app
