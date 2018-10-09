@@ -1,5 +1,7 @@
 import React from "react";
-const queryString = require('query-string');
+import queryString from "query-string";
+
+import Article from "../components/Article";
 
 export default class Archives extends React.Component {
   getAllQueryParams() {
@@ -7,19 +9,37 @@ export default class Archives extends React.Component {
 
     let params = "";
     for (let param in queryParams) {
-      params += " / " + param + " is " + queryParams[param];
+      if (params) { params += " / "; }
+      params += param + " is " + queryParams[param];
     }
     return params;
   }
 
+  getArticles() {
+    const Articles = [
+      "Some Article",
+      "Some Other Article",
+      "Yet Another Article",
+      "Still More",
+      "Fake Article",
+      "Partial Article",
+      "American Article",
+      "Mexican Article",
+    ].map((title, i) => <Article key={i} title={title}/> );
+
+    return Articles;
+  }
+
   render() {
-    console.log(this.props);
     const { article } = this.props.match.params;
-    let params = this.getAllQueryParams();
+    const params = this.getAllQueryParams();
+    const articles = this.getArticles();
     return (
       <div>
-        <h1>Archives / {article}</h1>
-        <h2>{params}</h2>
+        <h1>Archives</h1>
+        <h2>{article}</h2>
+        <h3>{params}</h3>
+        <div class="row">{articles}</div>
       </div>
     );
   }
