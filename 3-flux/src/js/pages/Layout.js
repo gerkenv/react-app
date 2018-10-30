@@ -1,33 +1,44 @@
 import React from "react";
-import { Link } from "react-router";
 
-import Footer from "../components/layout/Footer";
-import Nav from "../components/layout/Nav";
+import { Route } from "react-router";
+import { HashRouter } from "react-router-dom";
+
+import Archives from "./Archives";
+import Todos from "./Todos";
+import Settings from "./Settings";
+
+import Nav from "../components/Nav";
+import Footer from "../components/Footer";
 
 export default class Layout extends React.Component {
   render() {
-    const { location } = this.props;
-    const containerStyle = {
-      marginTop: "60px"
-    };
-
     return (
-      <div>
+      <HashRouter>
+        <div>
 
-        <Nav location={location} />
+          <Route path="/" component={Nav}/>
 
-        <div class="container" style={containerStyle}>
-          <div class="row">
-            <div class="col-lg-12">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
 
-              {this.props.children}
+                {/* If we use `exact path` then component is displayed
+                only at `/` route, but if we use `path` then component
+                is displayed at every route that begins with `/` */}
 
+                {/* Beware of hash sign `#` - `localhost:8080/#/archives` */}
+                <Route path="/archives/:article?" component={Archives}/>
+                <Route path="/settings" component={Settings}/>
+                <Route exact path="/" component={Todos}/>
+
+                <Route path="/" component={Footer}/>
+
+              </div>
             </div>
           </div>
-          <Footer/>
-        </div>
-      </div>
 
+        </div>
+      </HashRouter>
     );
   }
 }
