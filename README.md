@@ -762,6 +762,48 @@ Switch to the branch `3-flux-setup`.
 Working directory for this part is `3-flux`.
 Call `npm install` from working directory.
 
-## 3.1
 
+## 3.1 Flux pattern
+
+
+## 3.2 Creating a Store
+We will create a new file at `./src/js/stores/TodoStore.js`.
+As we now from the pattern, when `store` changes, component has to re-render. So component has to be able to listen the `store` events. Thus we will base our `store` on top of `EventEmitter` class.
+```js
+// TodoStore.js
+
+import { EventEmitter } from "events";
+
+class TodoStore extends EventEmitter {
+
+}
+
+const todoStore = new TodoStore;
+
+export default todoStore;
+```
+Let's fill up our store with default data. We will move it from our `Todos` component. Also we will create a method to get all existing todos.
+```js
+class TodoStore extends EventEmitter {
+  constructor() {
+    super();
+    this.todos = [
+      {
+        id: 113464613,
+        text: "Go Shopping",
+        complete: false
+      },
+      {
+        id: 235684679,
+        text: "Pay Water Bill",
+        complete: false
+      },
+    ];
+  }
+
+  getAll() {
+    return this.todos;
+  }
+}
+```
 
