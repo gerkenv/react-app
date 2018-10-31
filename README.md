@@ -57,9 +57,6 @@ const app = document.getElementById('app');
 ReactDOM.render(<Layout/>, app);
 ```
 
-### Installing
-Incredible chapter. Call `npm install` from folder `1-basic-react`.
-
 ### Building an Application with Webpack v.4
 So right we have our js source files in `src/js` and our html page in `dist` folder. Our page requires `client.min.js`, so it has to be created and moved to `dist` folder. This all is already defined in webpack configuration file. Just read the comments inside.
 There are a couple of options how you can run `webpack`
@@ -757,4 +754,14 @@ From version 4 it is a bit different - read this thread:
 
 There is a possibility to hang a callback to a `NavLink`, so when the route becomes active, the state can be changed in the component.
 * https://reacttraining.com/react-router/web/api/NavLink/isactive-func
+
+
+# 3 Flux
+## 3.0 Setup
+Switch to the branch `3-flux-setup`.
+Working directory for this part is `3-flux`.
+Call `npm install` from working directory.
+
+## 3.1
+
 

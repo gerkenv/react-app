@@ -3,12 +3,12 @@ import React from "react";
 import { Route } from "react-router";
 import { HashRouter } from "react-router-dom";
 
-import Archives from "./Archives";
+import Favorites from "./Favorites";
 import Todos from "./Todos";
 import Settings from "./Settings";
 
-import Nav from "../components/Nav";
-import Footer from "../components/Footer";
+import Nav from "../components/layout/Nav";
+import Footer from "../components/layout/Footer";
 
 export default class Layout extends React.Component {
   render() {
@@ -27,7 +27,7 @@ export default class Layout extends React.Component {
                 is displayed at every route that begins with `/` */}
 
                 {/* Beware of hash sign `#` - `localhost:8080/#/archives` */}
-                <Route path="/archives/:article?" component={Archives}/>
+                <Route path="/favorites" component={Favorites}/>
                 <Route path="/settings" component={Settings}/>
                 <Route exact path="/" component={Todos}/>
 

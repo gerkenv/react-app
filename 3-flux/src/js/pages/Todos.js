@@ -1,8 +1,6 @@
 import React from "react";
 
 import Todo from "../components/Todo";
-import TodoStore from "../stores/TodoStore";
-
 
 export default class Todos extends React.Component {
   constructor() {

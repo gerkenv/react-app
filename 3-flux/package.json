@@ -1,8 +1,8 @@
 {
-  "name": "react-routed-app",
+  "name": "react-flux",
   "repository": "https://github.com/gerkenv/react-app.git",
   "version": "1.0.0",
-  "description": "basic react application",
+  "description": "react application with flux pattern",
   "scripts": {
     "build": "npx webpack --config webpack.config.js --progress",
     "serve": "npx webpack-dev-server --config webpack.config.js --inline --hot --progress --open",
