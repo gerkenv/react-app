@@ -35,12 +35,17 @@ class TodoStore extends EventEmitter {
   }
 
   handleActions(action) {
-    console.log(`The handled action is ${action}`);
+    switch(action.type) {
+      case "CREATE_TODO": {
+        this.createTodo(action.text);
+      }
+    }
   }
 }
 
 const todoStore = new TodoStore;
 dispatcher.register(todoStore.handleActions.bind(todoStore));
 
-window.todoStore = todoStore
+window.dispatcher = dispatcher;
+window.todoStore = todoStore;
 export default todoStore;

@@ -868,7 +868,7 @@ import { Dispatcher } from "flux";
 
 export default new Dispatcher;
 ```
-Now our `TodoStore` can register itself ass a listener of our dispatcher.
+Our `TodoStore` must be a listener of our dispatcher.
 So we should import our dispatcher in the store. And `register` our `todoStore` in dispatcher. But we cannot simply register a store, we have to create a handler that will be reacting to every action dispatcher will be providing.
 ```js
 // beginning of the `TodoStore`
@@ -877,14 +877,86 @@ import dispatcher from "../dispatcher"
 // end of the `TodoStore`
 
   handleActions(action) {
-    console.log(`The handled action is ${action}`);
+    console.log('%cThe handled action is', 'background: orange;', {action});
   }
 }
 
 const todoStore = new TodoStore;
 dispatcher.register(todoStore.handleActions).bind(todoStore);
 ```
-To be able play around with `dispatcher` we will expose it on `window` object. 
+To be able test our bindings and play around with `dispatcher` we will expose it on `window` object.
 ```js
 window.dispatcher = dispatcher;
 ```
+Let's pass in a new action through the console:
+```js
+dispatcher.dispatch({action:"create_task"});
+```
+So it should be printed out now.
+Let's move on and we will now add a handler case for the `CREATE_TODO` action. It is a common practice to write actions uppercase, so get used to it.
+We will extend our event handler:
+```js
+handleActions(action) {
+  switch(action.type) {
+    case "CREATE_TODO": {
+      this.createTodo(action.text);
+    }
+  }
+}
+```
+So now if we go to the console and type in...
+```js
+dispatcher.dispatch({type: "CREATE_TODO", text: Date.now()});
+```
+We should see a new todo at our todo page.
+
+## 3.5 Adding an Action to a Component
+So our flux circle is almost complete. Let's create action definition.
+We make a new file `src/js/TodoActions.js`.
+All we need to do in the actions is to dispatch something.
+We create a two basic actions - delete and create.
+```js
+import dispatcher from "../dispatcher";
+
+export function createTodo(text) {
+  dispatcher.dispatch({
+    type: "CREATE_TODO",
+    text
+  });
+}
+
+export function deleteTodo(id) {
+  dispatcher.dispatch({
+    type: "DELETE_TODO",
+    id
+  });
+}
+```
+Now we move on to our `Todos` component. Let's import our actions and define a button to create a todo.
+```js
+// above
+import * as TodoActions from "../actions/TodoActions"
+
+// before `render` method
+  createTodo() {
+    TodoActions.createTodo(Date.now());
+  }
+
+// in `render` method
+    return (
+      <div>
+        <button onClick={this.createTodo.bind(this)}>Create</button>
+        <h1>Todos</h1>
+        <ul>{TodoComponents}</ul>
+      </div>
+    );
+```
+`import * as Obj from ....` will create an object with all available exported functions, objects, variables, etc. That is a clean way to export multiple definitions from a file.
+
+So now each time the button will be pressed - a new todo with a time stamp should be created.
+
+Now we can implement an input field to create custom todos.
+But let's first take a look at asynchronous way of getting data from backend and asynchronous actions.
+
+## 3.6 Asynchronous & AJAX Flux Actions
+
