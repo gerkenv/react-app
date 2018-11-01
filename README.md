@@ -854,3 +854,37 @@ todoStore.createTodo("Check emails");
 ```
 
 ## 3.4 Flux Dispatcher
+So now our componenet is getting information from our store and listening for changes in store, thus updates every time when store gets updated.
+So now let's add a dispatcher, so anytime some action is taking a place, the dispatcher will notify all subscribed stores, and our store will get a chance to update.
+
+The first thing, we need a new package:
+```js
+npm install -s flux
+```
+
+Then we need a new file `src/js/dispatcheer.js`. Let's fill it up.
+```js
+import { Dispatcher } from "flux";
+
+export default new Dispatcher;
+```
+Now our `TodoStore` can register itself ass a listener of our dispatcher.
+So we should import our dispatcher in the store. And `register` our `todoStore` in dispatcher. But we cannot simply register a store, we have to create a handler that will be reacting to every action dispatcher will be providing.
+```js
+// beginning of the `TodoStore`
+import dispatcher from "../dispatcher"
+
+// end of the `TodoStore`
+
+  handleActions(action) {
+    console.log(`The handled action is ${action}`);
+  }
+}
+
+const todoStore = new TodoStore;
+dispatcher.register(todoStore.handleActions).bind(todoStore);
+```
+To be able play around with `dispatcher` we will expose it on `window` object. 
+```js
+window.dispatcher = dispatcher;
+```

@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import dispatcher from "../dispatcher"
 
 class TodoStore extends EventEmitter {
   constructor() {
@@ -32,10 +33,14 @@ class TodoStore extends EventEmitter {
   getAll() {
     return this.todos;
   }
+
+  handleActions(action) {
+    console.log(`The handled action is ${action}`);
+  }
 }
 
 const todoStore = new TodoStore;
+dispatcher.register(todoStore.handleActions.bind(todoStore));
 
-window.todoStore = todoStore;
-
+window.todoStore = todoStore
 export default todoStore;
