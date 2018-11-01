@@ -807,3 +807,50 @@ class TodoStore extends EventEmitter {
 }
 ```
 
+## 3.3 Creating a Store Event
+Great, currently our app can show initial set of todos, but is completely static, we acannot add any new one, let's change it.
+
+We start in our `TodoStore`, we create method to add a new todo.
+```js
+  createTodo(text) {
+    const id = Date.now();
+
+    this.todos.push({
+      id,
+      text,
+      complete: false
+    });
+
+    this.emit("change");
+  }
+```
+When we're adding a new todo we what to notify our component, so we emitting the `change` event.
+
+Now we need to add an event listener for our event. The tricky thing about adding an event listener in component is that every time, when the `state` / `props` of component is / are changed - the component `render` method will be called all over again. But an event listener should be added only once.
+
+There are a couple of specific function for any react component that will be called only if they are defined. These function depend on the common lifecycle of the react component.
+
+`componentWillMount` - whenever the component is about to render to the DOM for the very first time. Only at that time this function is fired. So it is great place to add an event listener.
+
+So let's add an event listener to out `Todos` component.
+```js
+  componentWillMount() {
+    TodoStore.on("change", () => {
+      // because it is an arrow function `this` here is inherited from outer scope
+      this.setState({
+        todos: TodoStore.getAll()
+      });
+    });
+  }
+```
+Okay, now we can test our new method in store, let's expose our `todoStore` instance to the `window` object.
+```js
+window.todoStore = todoStore;
+```
+Now from a browser console we can create new todos:
+```js
+todoStore.createTodo("Call grandma");
+todoStore.createTodo("Check emails");
+```
+
+## 3.4 Flux Dispatcher
