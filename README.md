@@ -959,4 +959,82 @@ Now we can implement an input field to create custom todos.
 But let's first take a look at asynchronous way of getting data from backend and asynchronous actions.
 
 ## 3.6 Asynchronous & AJAX Flux Actions
+So let's imagine we want to reload all of our todo and grab them from the server. All of the actions we created before were synchronous, but now we have to manage asynchronous event.
+Let's add the new `reload` button to our `Todos` component. And an event handler for the button.
+```js
+  // new class method
+  reloadTodos() {
+    TodoActions.reloadTodos();
+  }
 
+  // jsx in `render` method
+  return (
+    <div>
+      <button onClick={this.reloadTodos.bind(this)}>Reload</button>
+      <br/>
+      <input/>
+      <button onClick={this.createTodo.bind(this)}>Create</button>
+      <h1>Todos</h1>
+      <ul>{TodoComponents}</ul>
+    </div>
+  );
+```
+Now we need to create the `reloadTodos` action in `TodoActions.js`.
+```js
+export function reloadTodos() {
+  dispatcher.dispatch({
+    type: "RELOAD_TODOS_REQUEST",
+  });
+  setTimeout(function() {
+    let error = false;
+    if (error) {
+      dispatcher.dispatch({
+        type: "RELOAD_TODOS_RESPONSE_ERROR",
+        err: "request failed"
+      });
+    } else {
+      dispatcher.dispatch({
+        type: "RELOAD_TODOS_RESPONSE",
+        todos: [
+          {
+            id: 755864464,
+            text: "Go Shopping Again",
+            complete: false
+          },
+          {
+            id: 866666589,
+            text: "Hug Wife",
+            complete: false
+          },
+        ] 
+      });
+    }
+    
+  }, 3000);
+}
+```
+So when we are fetching some data we can dispatch an event to set `loading` state and, for example, show a spinner and lock all actions.
+When the result is returned another action can be dispatched, to notifz the app, that loading is finished and received data can be processed.
+
+So the last step to close our flux circle is to extend our action handler for a new action in the `TodoStore`.
+```js
+handleActions(action) {
+    switch(action.type) {
+      case "CREATE_TODO": {
+        this.createTodo(action.text);
+        break;
+      }
+      case "RELOAD_TODOS_RESPONSE": {
+        this.reloadTodos(action.todos);
+      }
+    }
+  }
+}
+```
+Of course, the function `reloadTodos` has to be defined.
+```js
+  reloadTodos(todos) {
+    this.todos = todos;
+    this.emit("change");
+  }
+```
