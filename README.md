@@ -1038,3 +1038,93 @@ Of course, the function `reloadTodos` has to be defined.
     this.emit("change");
   }
 ```
+
+## Memory Leaks in React
+If you open up `tasks` page, click `reload` then go to `setting` and then again to `tasks` and click `reload` second time then you will see following error:
+> react-dom.development.js:520 Warning: Can't call setState (or forceUpdate) on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
+    in Todos (created by Route)
+
+Mostly, memory leak is whenever you fail to unbind an event listener in javascript. When you working with react components you have to remember that at the moment you navigate to the `todos` route - a brand new `todos` component is created and it registers itself as an event listener of `TodoStore` in function `componentWillMount`. 
+If the rendered html of a new component instance looks the same way as the html of the old instance then new instance will not be mounted to the DOM. Otherwise old instance will be unmounted and the new instance with fresh props is mounted. 
+But in anyway we have two listeners and one of them is unmounted. So when we click `reload` button we get the above error.
+
+That can be easily checked. Let's print out the quantity of registered listeners of `TodoStore`.
+```js
+  componentWillMount() {
+    TodoStore.on("change", () => {
+      this.setState({
+        todos: TodoStore.getAll()
+      });
+    });
+    console.warn("Count", TodoStore.listenerCount("change"));
+  }
+```
+Now if you navigate away from `tasks` and back then you will notice in console that count is increasing.
+
+So when we adding some event listeners in `componentWillMount`, than we have to make sure that we cancel event listening in `componentWillUnmount`.
+```js
+  constructor() {
+    super();
+    this.getTodos = this.getTodos.bind(this);
+    this.state = {
+      todos: TodoStore.getAll()
+    };
+  }
+
+  componentWillMount() {
+    TodoStore.on("change", this.getTodos);
+    console.warn("Count", TodoStore.listenerCount("change"));
+  }
+
+  componentWillUnmount() {
+    TodoStore.removeListener("change", this.getTodos);
+  }
+
+  getTodos() {
+    this.setState({
+      todos: TodoStore.getAll()
+    });
+  }
+```
+Also we have to make sure that we referencing the same function when we binding and unbinding an event.
+So if we remove assignment `this.getTodos = this.getTodos.bind(this);` from `constructor` and perform binding and unbinding so...
+```js
+  componentWillMount() {
+    TodoStore.on("change", this.getTodos.bind(this));
+  }
+
+  componentWillUnmount() {
+    TodoStore.removeListener("change", this.getTodos.bind(this));
+  }
+```
+... then it will not work because `bind` delivers a new function definition and in this case it is two different function definitions.
+
+# 4 Redux
+Redux pattern was created to eliminate troubles, that usually occurs in big flux application. 
+In flux, for one specific page, like `Todos` component, you need to create specific `store`and actions, associated with the page. This way you will close the flux circle for one page.
+So depending on quantity of your pages, quantity of shared information, complexity of pages interactions = application stability and simplicity are decreasing.
+
+If you have a small application then it does not really makes sense to setup redux, but for big apps with complicated event chains it will pay off on the long run.
+
+## 4.1 Difference Between Flux and Redux
+So the big change here is `reducers` and `one store`. 
+
+### 4.3.1 One Store
+You don't have multiple stores anymore, instead you have multiply properties on one big object.
+So the proper way to develop part 3 in flux wy further is to keep 3 separated stores for `todos`, `favorites`, `settings`. In redux we would simply create one big object with 3 properties `todos`, `favorites` and `settings`. Interesting thing about `one store` that we never mutate and never change it. Instead we trying to keep it under version control. Every time we want to update our store we have to create a new version of it. This way we always have a full history of the application on the client side, every exact state of the application data. This way we can always jump back in the history and restore the state we are interested in. We also can step-by-step follow every change in application. The key thing for now - the store is immutable.
+
+### 4.3.2 Provider Component
+In flux our main component was `layout`, in redux we have `provider` component and `provider` listens for a changes in store and re-renders whole react application every time when store updates. So our whole application is wrapped inside of `provider`.
+
+### 4.3.3 Smart and Dumb Components
+In flux we do not really distinguish one components form another, they all are components, but in redux it is different. 
+There smart components - they are top level components (pages), some people call them pages or containers. They are aware of the stores and can pull data out of it. They pass the data down as `props` to dumb components, like `todos` component, that has no idea if it is located in redux or flux, it simply take its own `props` and spin them out in form of todo list.
+
+### 4.3.4 Actions
+So the dumb components dispatch some actions and those actions may dispatch another action. Like asynchronous `reload` action in our flux example project.
+
+### 4.3.5 Reducers
+So instead of having multiple stores that all manage own data we have multiple reducers that modifies only a piece of store. But they modify it in immutable way, they always create a new peace of data. So instead of having those 3 stores you have 3 reducers.So 1st reducers works on `todos`, 2nd on `settings` and 3rd on `favorites` property of store. What's great about it is that they all can simultaneously react on the same action.
+
+### 4.3.6 Time-traveling
+Since store keeps all of its previous versions we can easily go back in time and restore any of previous states, it can be used for debugging purposes, it can be used for roll-back actions.
