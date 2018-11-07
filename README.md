@@ -1109,22 +1109,98 @@ If you have a small application then it does not really makes sense to setup red
 ## 4.1 Difference Between Flux and Redux
 So the big change here is `reducers` and `one store`. 
 
-### 4.3.1 One Store
+### 4.1.1 One Store
 You don't have multiple stores anymore, instead you have multiply properties on one big object.
 So the proper way to develop part 3 in flux wy further is to keep 3 separated stores for `todos`, `favorites`, `settings`. In redux we would simply create one big object with 3 properties `todos`, `favorites` and `settings`. Interesting thing about `one store` that we never mutate and never change it. Instead we trying to keep it under version control. Every time we want to update our store we have to create a new version of it. This way we always have a full history of the application on the client side, every exact state of the application data. This way we can always jump back in the history and restore the state we are interested in. We also can step-by-step follow every change in application. The key thing for now - the store is immutable.
 
-### 4.3.2 Provider Component
+### 4.1.2 Provider Component
 In flux our main component was `layout`, in redux we have `provider` component and `provider` listens for a changes in store and re-renders whole react application every time when store updates. So our whole application is wrapped inside of `provider`.
 
-### 4.3.3 Smart and Dumb Components
+### 4.1.3 Smart and Dumb Components
 In flux we do not really distinguish one components form another, they all are components, but in redux it is different. 
 There smart components - they are top level components (pages), some people call them pages or containers. They are aware of the stores and can pull data out of it. They pass the data down as `props` to dumb components, like `todos` component, that has no idea if it is located in redux or flux, it simply take its own `props` and spin them out in form of todo list.
 
-### 4.3.4 Actions
+### 4.1.4 Actions
 So the dumb components dispatch some actions and those actions may dispatch another action. Like asynchronous `reload` action in our flux example project.
 
-### 4.3.5 Reducers
+### 4.1.5 Reducers
 So instead of having multiple stores that all manage own data we have multiple reducers that modifies only a piece of store. But they modify it in immutable way, they always create a new peace of data. So instead of having those 3 stores you have 3 reducers.So 1st reducers works on `todos`, 2nd on `settings` and 3rd on `favorites` property of store. What's great about it is that they all can simultaneously react on the same action.
 
-### 4.3.6 Time-traveling
+### 4.1.6 Time-traveling
 Since store keeps all of its previous versions we can easily go back in time and restore any of previous states, it can be used for debugging purposes, it can be used for roll-back actions.
+
+## 4.2 Immutable JS
+### 4.2.1 Primitive Types
+There are 2 types of variables in JS, primitive (number, string, boolean) and reference types (object, array)
+Assignment of variable with a primitive type to another variable creates an independent copy of the value.
+```js
+var a = 3;
+var b = a;
+b = 1;
+console.log({a}, {b});
+```
+> {a: 3} {b: 1}
+
+### 4.2.2 Objects
+But if we make the same for an object, then things become much more interesting. Object always create a reference. So if we are assigning an object to a variable then this variable stores the reference to an object. This way when we assign the one variable to another only the reference value will be copied.
+thus both of them can now access and modify existing object through reference. 
+```js
+var a = {value: "a"};
+var b = a;
+b.value = "b";
+console.log({a}, {b});
+```
+There is a possibility to avoid that effect. We have to simply use `Object.assign` method. It requires 2 arguments (target_object, ...objects_to_assign). 
+You have to understand that if you call 
+```js
+var obj Object.assign(a, b, c, d)
+```
+then all duplicated properties that exists in objects will be overwritten by following rule `a.prop = b.prop = c.prop = d.prop`, this way, the value of `obj.prop` is `d.prop`.
+Analog methods are `$.extend`, `_.extend`, `_.assign`.
+```js
+var a = {value: "a"};
+var b = Object.assign({}, a);
+b.value = "b";
+console.log({a}, {b});
+```
+
+### 4.2.3 Arrays
+For array we can use `concat` method which is equivalent to `push` except it returns completely new array and `push` actually mutates the existing one and returns the new length.
+```js
+var a = [0, 1, 2];
+var b = a;
+b.push(7);
+console.log({a}, {b});
+```
+So with `concat` we can avoid shown issue.
+```js
+var a = [0, 1, 2];
+var b = a.concat(12);
+console.log({a}, {b});
+```
+
+Another way is to use the `filter` function, this way we can exclude some elements from array.
+```js
+var a = [0, 1, 2];
+var b = a.filter((element) => element < 2);
+console.log({a}, {b});
+```
+
+Also it is possible to create a new array using array destruction (ES6).
+```js
+var a = [0, 1, 2];
+var b = [9, ...a, 11];
+var c = [...a];
+c.push(45);
+console.log({a}, {b}, {c});
+```
+
+### Object with Nesteed Array
+```js
+var arr = [1,2,3];
+var a = {value: "a", data: arr};
+var b = Object.assign({}, a);
+b.data.push(67);
+b.value = "b";
+console.log(arr, a, b);
+
