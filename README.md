@@ -1203,4 +1203,10 @@ var b = Object.assign({}, a);
 b.data.push(67);
 b.value = "b";
 console.log(arr, a, b);
+```
 
+## 4.3 Basics of Redux
+### 4.3.0 Project initial structure
+Make a copy=paste of `1-basic-react`.
+
+### 4.3.1 
