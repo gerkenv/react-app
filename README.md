@@ -1207,6 +1207,36 @@ console.log(arr, a, b);
 
 ## 4.3 Basics of Redux
 ### 4.3.0 Project initial structure
-Make a copy=paste of `1-basic-react`.
+Make a copy-paste of `1-basic-react`.
 
-### 4.3.1 
+### 4.3.1 Redux Without Raect
+As it was said you need to copy the first part of tutorial `1-part-redux`.
+Then we need to install npm package called `redux` which implements redux architecture.
+So from folder `4-redux` you should call
+```
+npm i -s redux
+```
+Now we will not be using react at all. Because redux is actually independent from react. Redux is just the way to manage your application state.
+So in `client.js` we will delete everything and make an import.
+```js
+import { createStore } from "redux";
+```
+To start up a redux store you need only one thing - a reducer.
+```js
+const reducer = function (state, action) {
+
+}
+
+const store = createStore(reducer, 0);
+```
+Second argument of `createStore` is an initial state of a store, usually it is an object, that has multiple properties, but for simplicity we will pass in a number.
+Since we have a store then we can listen to this store, so we will subscribe to it.
+```js
+store.subscribe(() => {
+  console.log("Store is changed", store.getState());
+});
+
+```
+
+Now we can dispatch events to our store, so let's create the increment and decrement action.
+
